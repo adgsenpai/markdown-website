@@ -1,6 +1,6 @@
-import React from 'react';
-import { createStyles, Header, Menu, Group, Center, Container, ActionIcon, Tooltip } from '@mantine/core';
-import { useBooleanToggle } from '@mantine/hooks';
+import React, { useState } from 'react';
+import { createStyles, Header, Menu, Group, Center, Container, ActionIcon, Tooltip, MediaQuery, Drawer, Burger } from '@mantine/core';
+import { useBooleanToggle, useMediaQuery } from '@mantine/hooks';
 import { ChevronDown, Code, Download, Folder, BrandGithub, File } from 'tabler-icons-react';
 import { ColorSchemeToggle } from '../ColorSchemeToggle/ColorSchemeToggle';
 import jsPDF from 'jspdf';
@@ -210,7 +210,7 @@ const fileOpen = () => {
 
 
 export function SiteHeader({ links }: HeaderSearchProps) {
-  const [opened, toggleOpened] = useBooleanToggle(false);
+  const [opened, setOpened] = useState(false);
   const { classes } = useStyles();
 
   const items = links.map((link) => {
@@ -218,32 +218,7 @@ export function SiteHeader({ links }: HeaderSearchProps) {
       <Menu.Item key={item.link}>{item.label}</Menu.Item>
     ));
 
-    if (menuItems) {
-      return (
-        <Menu
-          key={link.label}
-          trigger="hover"
-          delay={0}
-          transitionDuration={0}
-          placement="end"
-          gutter={1}
-          control={
-            <a
-              href={link.link}
-              className={classes.link}
-              onClick={(event) => event.preventDefault()}
-            >
-              <Center>
-                <span className={classes.linkLabel}>{link.label}</span>
-                <ChevronDown size={12} />
-              </Center>
-            </a>
-          }
-        >
-          {menuItems}
-        </Menu>
-      );
-    }
+
 
     return (
       <a
@@ -257,106 +232,117 @@ export function SiteHeader({ links }: HeaderSearchProps) {
     );
   });
 
+  const isMobile = useMediaQuery('(max-width: 768px)');
+  const DocHeaderHeight = 60; // Adjust as needed
+
+
   return (
     <Header height={DocHeaderHeight}>
-      <Container size="xl">
-        <div className={classes.inner}>
-          <Group>ADGSTUDIOS - Markdown Application</Group>
-
-          <Group spacing={5} className={classes.links}>
-            {items}
-          </Group>
-
-          <Group>
-            <Tooltip label="New File">
-              <ActionIcon
-                color="indigo"
-                sx={(theme) => ({
-                  backgroundColor:
-                    theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
-                  color: theme.colorScheme === 'dark' ? theme.colors.indigo[4] : theme.colors.indigo[6],
-                })}
-                // eslint-disable-next-line no-restricted-globals
-                onClick={() => { newFile(); }}
-              >
-                <File size={18} />
-              </ActionIcon>
-            </Tooltip>
 
 
-            {/* Action icon to open the file explorer */}
-            <Tooltip label="Open File">
-              <ActionIcon
-                color="indigo"
-                sx={(theme) => ({
-                  backgroundColor:
-                    theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
-                  color: theme.colorScheme === 'dark' ? theme.colors.indigo[4] : theme.colors.indigo[6],
-                })}
-                // eslint-disable-next-line no-restricted-globals
-                onClick={() => { fileOpen(); }}
-              >
-                <Folder size={18} />
-              </ActionIcon>
-            </Tooltip>
+      <Group position="apart" noWrap className={classes.inner}>
+        <h5 style={{ fontSize: '1.0rem', fontWeight: 'bold' }}>ADGSTUDIOS Markdown Editor</h5>
+        <Group noWrap>
+          <Tooltip label="New File">
+            <ActionIcon
+              color="indigo"
+              sx={(theme) => ({
+                backgroundColor:
+                  theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
+                color: theme.colorScheme === 'dark' ? theme.colors.indigo[4] : theme.colors.indigo[6],
+              })}
+              // eslint-disable-next-line no-restricted-globals
+              onClick={() => { newFile(); }}
+            >
+              <File size={18} />
+            </ActionIcon>
+          </Tooltip>
 
 
-            <Tooltip label="Open Github Repo">
-              <ActionIcon
-                color="indigo"
+          {/* Action icon to open the file explorer */}
+          <Tooltip label="Open File">
+            <ActionIcon
+              color="indigo"
+              sx={(theme) => ({
+                backgroundColor:
+                  theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
+                color: theme.colorScheme === 'dark' ? theme.colors.indigo[4] : theme.colors.indigo[6],
+              })}
+              // eslint-disable-next-line no-restricted-globals
+              onClick={() => { fileOpen(); }}
+            >
+              <Folder size={18} />
+            </ActionIcon>
+          </Tooltip>
 
-                sx={(theme) => ({
-                  backgroundColor:
-                    theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
-                  color: theme.colorScheme === 'dark' ? theme.colors.indigo[4] : theme.colors.indigo[6],
-                })}
-                // eslint-disable-next-line no-restricted-globals
-                onClick={() => { location.href = 'https://github.com/adgsenpai/markdown-website'; }}
-              >
-                <BrandGithub size={18} />
-              </ActionIcon>
-            </Tooltip>
+
+          <Tooltip label="Open Github Repo">
+            <ActionIcon
+              color="indigo"
+
+              sx={(theme) => ({
+                backgroundColor:
+                  theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
+                color: theme.colorScheme === 'dark' ? theme.colors.indigo[4] : theme.colors.indigo[6],
+              })}
+              // eslint-disable-next-line no-restricted-globals
+              onClick={() => { location.href = 'https://github.com/adgsenpai/markdown-website'; }}
+            >
+              <BrandGithub size={18} />
+            </ActionIcon>
+          </Tooltip>
 
 
 
-            {/* Action icon to download the markdown file */}
-            <Tooltip label="Download Markdown File">
-              <ActionIcon
-                color="indigo"
-                sx={(theme) => ({
-                  backgroundColor:
-                    theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
-                  color: theme.colorScheme === 'dark' ? theme.colors.indigo[4] : theme.colors.indigo[6],
-                })}
-                // eslint-disable-next-line no-restricted-globals
-                onClick={() => { saveCode(); }}
-              >
-                <Code size={18} />
-              </ActionIcon>
-            </Tooltip>
+          {/* Action icon to download the markdown file */}
+          <Tooltip label="Download Markdown File">
+            <ActionIcon
+              color="indigo"
+              sx={(theme) => ({
+                backgroundColor:
+                  theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
+                color: theme.colorScheme === 'dark' ? theme.colors.indigo[4] : theme.colors.indigo[6],
+              })}
+              // eslint-disable-next-line no-restricted-globals
+              onClick={() => { saveCode(); }}
+            >
+              <Code size={18} />
+            </ActionIcon>
+          </Tooltip>
 
-            {/* Action icon to download the PDF file */}
-            <Tooltip label="Download PDF File">
-              <ActionIcon
-                color="indigo"
-                sx={(theme) => ({
-                  backgroundColor:
-                    theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
-                  color: theme.colorScheme === 'dark' ? theme.colors.indigo[4] : theme.colors.indigo[6],
-                })}
-                // eslint-disable-next-line no-restricted-globals
-                onClick={() => { savePDF(); }}
-              >
-                <Download size={18} />
-              </ActionIcon>
-            </Tooltip>
+          {/* Action icon to download the PDF file */}
+          <Tooltip label="Download PDF File">
+            <ActionIcon
+              color="indigo"
+              sx={(theme) => ({
+                backgroundColor:
+                  theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
+                color: theme.colorScheme === 'dark' ? theme.colors.indigo[4] : theme.colors.indigo[6],
+              })}
+              // eslint-disable-next-line no-restricted-globals
+              onClick={() => { savePDF(); }}
+            >
+              <Download size={18} />
+            </ActionIcon>
+          </Tooltip>
 
-            <ColorSchemeToggle />
+          <ColorSchemeToggle />
 
 
-          </Group>
-        </div>
-      </Container>
+        </Group>
+      </Group>
+
+      <Drawer
+        opened={opened}
+        onClose={() => setOpened(false)}
+        title="Menu"
+        padding="md"
+        size="sm"
+      >
+        {/* Content for mobile drawer menu */}
+        {/* You can place your navigation items here */}
+      </Drawer>
+
     </Header>
   );
 }
