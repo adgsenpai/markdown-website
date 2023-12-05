@@ -89,7 +89,7 @@ const savePDF = () => {
   // Function to wait for all images to load
   waitForImagesToLoad(divElement, () => {
     // Define the desired DPI
-    const desiredDPI = 1000;
+    const desiredDPI = 500;
     // Calculate the scale factor
     const scaleFactor = desiredDPI / 96;
 
