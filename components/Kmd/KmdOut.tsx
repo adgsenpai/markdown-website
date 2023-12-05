@@ -82,7 +82,7 @@ export default function KmdOut() {
 
   return (
     <ScrollArea className={classes.scrollOut}>
-      <MBox className={classes.out}>
+      <MBox className={classes.out} id='kmd-out'>
       { Content }
       </MBox>
     </ScrollArea>
